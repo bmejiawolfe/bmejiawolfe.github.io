@@ -15,8 +15,12 @@ videojs.registerPlugin('publicEndDate', function() {
   }
 
   var drawDateGate = function() {
-    myPlayer.el().removeChild(document.getElementById('vjs-date-gate'));
+    const element = document.getElementById('vjs-date-gate');
 
+    if (element) {
+      myPlayer.el().removeChild(document.getElementById('vjs-date-gate'));
+    }
+    
     var gate = document.createElement('div');
     gate.id = 'vjs-date-gate';
 
