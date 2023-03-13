@@ -1,6 +1,6 @@
 (function (window, videojs) {
   'use strict';
-  publicEndDate = function () {
+  var publicEndDate = function() {
     Date.daysBetween = function (date1, date2) {
       //Get 1 day in milliseconds
       var oneDay = 1000 * 60 * 60 * 24;
@@ -16,7 +16,7 @@
       return Math.round(differenceMs / oneDay);
     }
 
-    drawDateGate = function() {
+    var drawDateGate = function() {
       myPlayer.el().removeChild(document.getElementById('vjs-date-gate'));
 
       var gate = document.createElement('div');
