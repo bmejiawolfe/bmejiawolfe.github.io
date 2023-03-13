@@ -31,8 +31,11 @@
 
     var today = new Date();
     var pubDate = new Date(this.mediainfo.publishedAt);
+    var daysDifference = Date.daysBetween(pubDate, today);
 
-    if (Date.daysBetween(pubDate, today) < 30) {
+    console.log(daysDifference);
+
+    if (daysDifference < 30) {
       letPlay = true;
     }
 
@@ -42,5 +45,5 @@
     });
   }
 
-  videojs.plugin('publicEndDate', publicEndDate);
+  videojs.registerPlugin('publicEndDate', publicEndDate);
 }(window, window.videojs));
