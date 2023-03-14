@@ -1,47 +1,73 @@
-videojs.registerPlugin('publicEndDate', function() {
+videojs.registerPlugin('publicEndDate', function () {
   Date.daysBetween = function (date1, date2) {
-    //Get 1 day in milliseconds
     var oneDay = 1000 * 60 * 60 * 24;
 
-    // Convert both dates to milliseconds
     var date1Ms = date1.getTime();
     var date2Ms = date2.getTime();
 
-    // Calculate the difference in milliseconds
     var differenceMs = date2Ms - date1Ms;
 
-    // Convert back to days and return
     return Math.round(differenceMs / oneDay);
   }
 
-  var drawDateGate = function() {
-    const element = document.getElementById('vjs-date-gate');
-
-    if (element) {
-      myPlayer.el().removeChild(document.getElementById('vjs-date-gate'));
-    }
-    
-    var gate = document.createElement('div');
-    gate.id = 'vjs-date-gate';
-
-    var title = document.createElement('h3');
-    title.innerHTML = "Public-Facing Link has expired.";
-
-    gate.appendChild(title);
-  }
-
+  var $ = jQuery;
   var myPlayer = this;
-  var letPlay = false;
-
   var today = new Date();
-  var pubDate = new Date(this.mediainfo.publishedAt);
 
-  if (Date.daysBetween(pubDate, today) < 30) {
-    letPlay = true;
-  }
+  var ModalDialog = videojs.getComponent('ModalDialog');
+
+  var modal = new ModalDialog(myPlayer, {
+    temporary: false,
+    content: 'The 30-day limit for this video has expired.'
+  });
+
+  myPlayer.addChild(modal);
+
+  myPlayer.on('loadstart', function () {
+    let pubDate = new Date(myPlayer.mediainfo.publishedAt);
+    if (Date.daysBetween(pubDate, today) > 30) {
+      myPlayer.pause();
+      myPlayer.bigPlayButton.hide();
+      myPlayer.controlBar.hide();
+      modal.open();
+    } else {
+      myPlayer.bigPlayButton.show();
+      myPlayer.controlBar.show();
+      modal.close();
+    }
+  });
 
   myPlayer.on('play', function () {
-    if (letPlay) { myPlayer.play(); }
-    else { drawDateGate(); myPlayer.pause(); }
+    let pubDate = new Date(myPlayer.mediainfo.publishedAt);
+    if (Date.daysBetween(pubDate, today) > 30) {
+      myPlayer.pause();
+      modal.open();
+    } else {
+      myPlayer.play();
+    }
+  });
+
+  myPlayer.on("seeking", function () {
+    let pubDate = new Date(myPlayer.mediainfo.publishedAt);
+    if (Date.daysBetween(pubDate, today) > 30 && myPlayer.currentTime()) {
+      myPlayer.currentTime(currentTime);
+    }
+  });
+
+  myPlayer.on("seeked", function () {
+    let pubDate = new Date(myPlayer.mediainfo.publishedAt);
+    if (Date.daysBetween(pubDate, today) > 30 && myPlayer.currentTime()) {
+      myPlayer.currentTime(currentTime);
+    }
+  });
+
+  $('#gen-video').on({
+    'click': function () {
+      var inputValue = $("#input-video-id").val();
+      myPlayer.catalog.getVideo(inputValue, function (error, video) {
+        //deal with error
+        myPlayer.catalog.load(video);
+      });
+    }
   });
 });

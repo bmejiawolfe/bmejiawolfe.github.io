@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Brightcove Dyanmic Date Check</title>
+</head>
+
+<body>
+
+    <div id="video-boundary" style="max-width: 960px;">
+        <style>
+            video-js.video-js.vjs-fluid:not(.vjs-audio-only-mode) {
+                padding-top: 56.25%;
+            }
+        </style>
+
+        <div id="input-boundary" style="margin-bottom: 1rem;">
+            <input type="number" id="input-video-id" name="input-video-id" min="1" value="6319241762112" placeholder="Enter Media ID">
+            <input type="button" id="gen-video" value="Generate Video">
+        </div>
+
+        <video-js data-video-id="6319241762112" data-account="6285638718001" data-player="jWn7pOgh4"
+            data-embed="default" controls="" data-application-id="" class="vjs-fluid" id="vjs-video-container"></video-js>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+    <script src="https://players.brightcove.net/6285638718001/jWn7pOgh4_default/index.min.js"></script>
+    <script src="js/public-enddate.js"></script>
+
+    <script>
+        videojs.getPlayer("vjs-video-container").ready(function () {
+            var myPlayer = this;
+            myPlayer.publicEndDate();
+        });
+    </script>
+
+</body>
+
+</html>
